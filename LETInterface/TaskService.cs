@@ -24,38 +24,71 @@ namespace LETInterface
 
         public string Url(string path) => $"http://{_server}:{_port}{path}";
 
-        public async Task<HttpResponseMessage> TaskAddNew()
+        public HttpResponseMessage TaskAddNew()
         {
             var request = new HttpRequestMessage(HttpMethod.Post, Url("/tasks"));
-            Logger.WriteLog("client -> server :\n" + Logger.HttpRequestToLogString(request), true); // 로그 기록
+            string reqLog = Logger.HttpMessageToLogString(request);
+            Logger.WriteLog(reqLog, true); // 로그 기록
 
-            var response = await _client.SendAsync(request);
-            Logger.WriteLog("server -> client :\n" + Logger.HttpResponseToLogString(response), true); // 응답 로그
+            var response = _client.SendAsync(request).Result;
+            string respLog = Logger.HttpMessageToLogString(response);
+            Logger.WriteLog(respLog, true); // 응답 로그
 
             return response;
-
-            //return await _client.PostAsync(Url("/tasks"), null);
         }
-        public async Task<HttpResponseMessage> TaskSpecify(string path, object content)
+
+        public HttpResponseMessage TaskSpecify(string path, object content)
         {
             var json = JsonSerializer.Serialize(content);
-            return await _client.PutAsync(Url(path), new StringContent(json, Encoding.UTF8, "application/json"));
-        }
-        public async Task<HttpResponseMessage> TaskGet(string path) => await _client.GetAsync(Url(path));
-        public async Task<HttpResponseMessage> TaskDeleteAll() => await _client.DeleteAsync(Url("/tasks"));
 
-        public async Task<string> GetResultByUid(string uid)
+            var request = new HttpRequestMessage(HttpMethod.Put, Url(path));
+            string reqLog = Logger.HttpMessageToLogString(request);
+            Logger.WriteLog(reqLog, true);
+
+            var response = _client.PutAsync(Url(path), new StringContent(json, Encoding.UTF8, "application/json")).Result;
+            string respLog = Logger.HttpMessageToLogString(response);
+            Logger.WriteLog(respLog, true);
+
+            return response;
+        }
+        public HttpResponseMessage TaskGet(string path)
         {
-            var response = await _client.GetAsync(Url($"/results_by_uid/{uid}.xml"));
+            var request = new HttpRequestMessage(HttpMethod.Get, Url(path));
+            string reqLog = Logger.HttpMessageToLogString(request);
+            Logger.WriteLog(reqLog, true);
+
+            var response = _client.SendAsync(request).Result;
+            string respLog = Logger.HttpMessageToLogString(response);
+            Logger.WriteLog(respLog, true);
+
+            return response;
+        }
+
+        public HttpResponseMessage TaskDeleteAll()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Delete, Url("/tasks"));
+            string reqLog = Logger.HttpMessageToLogString(request);
+            Logger.WriteLog(reqLog, true);
+
+            var response = _client.SendAsync(request).Result;
+            string respLog = Logger.HttpMessageToLogString(response);
+            Logger.WriteLog(respLog, true);
+
+            return response;
+        }
+
+        public string GetResultByUid(string uid)
+        {
+            var response = _client.GetAsync(Url($"/results_by_uid/{uid}.xml")).Result;
             if (!response.IsSuccessStatusCode) throw new Exception("Error: acquiring results by UID");
-            return await response.Content.ReadAsStringAsync();
+            return response.Content.ReadAsStringAsync().Result;
         }
 
-        public async Task<string> GetLastResult()
+        public string GetLastResult()
         {
-            var response = await _client.GetAsync(Url("/last_result.xml"));
+            var response = _client.GetAsync(Url("/last_result.xml")).Result;
             if (!response.IsSuccessStatusCode) throw new Exception("Error: acquiring last result");
-            return await response.Content.ReadAsStringAsync();
+            return response.Content.ReadAsStringAsync().Result;
         }
     }
 }

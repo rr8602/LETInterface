@@ -36,48 +36,65 @@ namespace LETInterface
             }
         }
 
-        public static string HttpRequestToLogString(HttpRequestMessage request)
+        public static string HttpMessageToLogString(object message)
         {
             var sb = new StringBuilder();
 
-            sb.AppendLine($"{request.Method} {request.RequestUri.PathAndQuery} HTTP/{request.Version}");
-
-            // Host Header
-            sb.AppendLine($"Host: {request.RequestUri.Host}{(request.RequestUri.Port != 80 && request.RequestUri.Port != 443 ? ":" + request.RequestUri.Port : "")}");
-
-            // 기타 Header
-            foreach (var header in request.Headers)
+            try
             {
-                sb.AppendLine($"{header.Key}: {string.Join(", ", header.Value)}");
-            }
-            if (request.Content != null)
-            {
-                foreach (var header in request.Content.Headers)
+                if(message is HttpRequestMessage request)
                 {
-                    sb.AppendLine($"{header.Key}: {string.Join(", ", header.Value)}");
+                    sb.AppendLine("A new connection...\n");
+                    sb.AppendLine("client -> server :");
+
+                    // Request Line
+                    sb.AppendLine($"{request.Method} {request.RequestUri.PathAndQuery} HTTP/{request.Version}");
+
+                    // Host Header
+                    sb.AppendLine($"Host: {request.RequestUri.Host}{(request.RequestUri.Port != 80 && request.RequestUri.Port != 443 ? ":" + request.RequestUri.Port : "")}");
+
+                    // 기타 Header
+                    foreach (var header in request.Headers)
+                    {
+                        sb.AppendLine($"{header.Key}: {string.Join(", ", header.Value)}");
+                    }
+
+                    if (request.Content != null)
+                    {
+                        foreach (var header in request.Content.Headers)
+                        {
+                            sb.AppendLine($"{header.Key}: {string.Join(", ", header.Value)}");
+                        }
+                    }
+                }
+                else if (message is HttpResponseMessage response)
+                {
+                    sb.AppendLine("server -> client :");
+
+
+                    // Status Line
+                    sb.AppendLine($"HTTP/{response.Version} {(int)response.StatusCode} {response.ReasonPhrase}");
+
+                    // Header
+                    foreach (var header in response.Headers)
+                    {
+                        sb.AppendLine($"{header.Key}: {string.Join(", ", header.Value)}");
+                    }
+
+                    if (response.Content != null)
+                    {
+                        foreach (var header in response.Content.Headers)
+                        {
+                            sb.AppendLine($"{header.Key}: {string.Join(", ", header.Value)}");
+                        }
+                    }
                 }
             }
-            return sb.ToString();
-        }
-
-        public static string HttpResponseToLogString(HttpResponseMessage response)
-        {
-            var sb = new StringBuilder();
-
-            sb.AppendLine($"HTTP/{response.Version} {(int)response.StatusCode} {response.ReasonPhrase}");
-
-            // Header
-            foreach (var header in response.Headers)
+            catch (Exception ex)
             {
-                sb.AppendLine($"{header.Key}: {string.Join(", ", header.Value)}");
+                sb.AppendLine($"Error Log: {ex.Message}");
             }
-            if (response.Content != null)
-            {
-                foreach (var header in response.Content.Headers)
-                {
-                    sb.AppendLine($"{header.Key}: {string.Join(", ", header.Value)}");
-                }
-            }
+
             return sb.ToString();
         }
 

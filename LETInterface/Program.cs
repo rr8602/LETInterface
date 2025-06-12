@@ -8,7 +8,7 @@ namespace LETInterface
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             string server = "ets.let.fortiddns.com";
             int port = 2010;
@@ -24,7 +24,7 @@ namespace LETInterface
             var taskService = new TaskService(server, port);
             var controller = new CycleControl(taskService);
 
-            await controller.RunCycle(uid, vsn, vin, line, floorpitch);
+            controller.RunCycle(uid, vsn, vin, line, floorpitch);
         }
     }
 }

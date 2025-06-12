@@ -78,6 +78,7 @@
     <Compile Include="Logger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShareInfo.cs" />
     <Compile Include="TaskService.cs" />
   </ItemGroup>
   <ItemGroup>
