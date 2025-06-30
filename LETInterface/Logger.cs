@@ -42,7 +42,7 @@ namespace LETInterface
 
             try
             {
-                if(message is HttpRequestMessage request)
+                if (message is HttpRequestMessage request)
                 {
                     sb.AppendLine("A new connection...\n");
                     sb.AppendLine("client -> server :");

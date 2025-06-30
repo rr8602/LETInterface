@@ -73,6 +73,7 @@ namespace LETInterface
 
         public string RunCycle(string uid, int vsn, string vin, string line, double floorpitch)
         {
+            // 아래 메서드 하나당 TaskService 클래스의 주기를 한 번 돌아야 함
             _service.TaskDeleteAll();
             StartCycle(uid);
             VehicleSelection(vsn, vin);

@@ -13,8 +13,8 @@ namespace LETInterface
             string server = "ets.let.fortiddns.com";
             int port = 2010;
 
-            // 바코드로 받은 정보들 (예시 - 차후에 수정 필요)
-            // 바코드에서 정보들이 어떻게 넘어오는지 확인이 필요
+            // 바코드로 받은 정보들 (예시 -> 차후에 수정 필요)
+            // 바코드에서 정보들이 어떻게 넘어오는지 확인 필요
             string uid = "UID123";
             int vsn = 1;
             string vin = "VIN123";
