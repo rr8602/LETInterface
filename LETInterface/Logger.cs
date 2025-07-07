@@ -71,7 +71,6 @@ namespace LETInterface
                 {
                     sb.AppendLine("server -> client :");
 
-
                     // Status Line
                     sb.AppendLine($"HTTP/{response.Version} {(int)response.StatusCode} {response.ReasonPhrase}");
 
@@ -97,6 +96,5 @@ namespace LETInterface
 
             return sb.ToString();
         }
-
     }
 }
